@@ -1,0 +1,26 @@
+\section{Obetivos}
+\subsection{Objetivo Geral}
+Desenvolver um sistema de processamento e análise de imagens de partidas de futebol capaz de identificar 
+e estimar a posição dos jogadores no campo a partir de imagens de vídeo, utilizando técnicas de processamento digital 
+de sinais e visão computacional para realizar a detecção, o rastreamento e a projeção das posições dos jogadores sobre uma 
+representação do campo de jogo.
+\subsection{Objetivos específicos} 
+Para alcançar o objetivo geral, pretende-se: 
+\begin{itemize} 
+    \item investigar e preparar os dados de partidas de futebol, explorando informações de vídeo, anotações de jogadores, parâmetros de câmera e matrizes de homografia disponíveis no conjunto de dados utilizado; 
+    \item detectar os jogadores presentes em cada quadro do vídeo, obtendo suas posições em coordenadas de imagem; 
+    \item rastrear os jogadores ao longo dos quadros, associando as detecções de um mesmo jogador entre diferentes instantes da partida; 
+    \item estimar a posição dos jogadores no campo, aplicando a transformação de homografia entre o plano da imagem e o plano do campo de futebol; 
+    \item representar visualmente o estado da partida, projetando as posições estimadas dos jogadores sobre uma representação bidimensional do campo; 
+    \item investigar a possibilidade de classificação das equipes utilizando características visuais dos jogadores, como informações de cor e aparência dos uniformes; 
+    \item avaliar o desempenho do sistema, comparando as posições e trajetórias estimadas com as informações de referência disponíveis no conjunto de dados; 
+    \item desenvolver uma interface experimental que permita a inserção de vídeos e a visualização dos resultados do processamento, facilitando a demonstração e a análise do sistema. 
+\end{itemize} 
+\subsection{Resultados esperados} 
+Espera-se obter um protótipo capaz de processar sequências de vídeo de partidas de futebol e produzir, para cada jogador 
+identificado, sua posição na imagem e sua correspondente posição estimada no campo. Como resultado, pretende-se também 
+gerar uma representação visual das trajetórias dos jogadores ao longo da partida, possibilitando a análise espacial da 
+movimentação das equipes. Além disso, espera-se avaliar quantitativamente a qualidade das etapas de detecção, rastreamento e 
+transformação das coordenadas, identificando as principais limitações do método e os fatores que influenciam seu desempenho. 
+A implementação deverá servir como uma aplicação prática dos conceitos de processamento digital de sinais, especialmente 
+aqueles relacionados ao processamento de imagens, transformações geométricas e análise de sequências temporais.
