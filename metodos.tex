@@ -1,0 +1,92 @@
+\section{Métodos}
+
+O rastreamento da posição de jogadores em partidas de futebol a partir de imagens de vídeo envolve diferentes etapas de processamento digital de sinais e visão computacional. De modo geral, as abordagens utilizadas na literatura combinam detecção de objetos, rastreamento de múltiplos objetos (\textit{Multi-Object Tracking}, MOT) e técnicas de reconstrução do estado do jogo (\textit{Game State Reconstruction}, GSR). Essas técnicas permitem extrair informações espaciais e temporais a partir das imagens, possibilitando aplicações em análise tática e estatística esportiva.
+
+\subsection{Detecção de jogadores}
+
+Uma etapa fundamental do sistema é a detecção dos jogadores em cada quadro do vídeo. Métodos modernos de detecção de objetos utilizam redes neurais para localizar objetos e classificá-los diretamente a partir da imagem. Entre essas abordagens, a família YOLO (\textit{You Only Look Once}) propôs tratar a detecção como um problema de regressão, realizando a predição das caixas delimitadoras e das respectivas classes em uma única rede neural \cite{redmon2016yolo}.
+
+Neste projeto, a detecção será utilizada como etapa inicial para determinar a localização dos jogadores na imagem. Para cada jogador detectado, será obtida uma caixa delimitadora (\textit{bounding box}) contendo suas coordenadas espaciais. A partir dessa representação será posteriormente determinado um ponto de referência associado à posição do jogador sobre o gramado.
+
+\subsection{Rastreamento de múltiplos objetos}
+
+A detecção realizada independentemente em cada quadro não fornece, por si só, uma identidade persistente para cada jogador. Para obter trajetórias individuais, é necessário realizar a associação das detecções ao longo do tempo. Esse problema é tratado por métodos de rastreamento de múltiplos objetos.
+
+Uma abordagem amplamente utilizada é o \textit{tracking-by-detection}, na qual um detector fornece as posições dos objetos e um algoritmo posterior realiza a associação entre as detecções de quadros consecutivos. O método SORT (\textit{Simple Online and Realtime Tracking}) utiliza um filtro de Kalman para estimar o estado dos objetos e o algoritmo de atribuição húngara para realizar a associação entre detecções e trajetórias \cite{bewley2016sort}.
+
+Uma extensão desse método é o Deep SORT, que incorpora características de aparência dos objetos ao processo de associação. Essa informação adicional permite reduzir ambiguidades e manter as identidades durante situações de oclusão ou quando objetos visualmente semelhantes estão próximos \cite{wojke2017deepsort}.
+
+Neste projeto, será utilizado um algoritmo de rastreamento baseado em detecção para associar os jogadores entre quadros consecutivos. O objetivo dessa etapa é obter uma identidade persistente para cada jogador e, consequentemente, construir sua trajetória temporal.
+
+\subsection{Reconstrução da posição no campo}
+
+As coordenadas obtidas diretamente da imagem estão associadas ao sistema de coordenadas bidimensional da câmera e não representam diretamente a posição dos jogadores sobre o campo. Para realizar essa conversão, será utilizada uma transformação projetiva entre o plano da imagem e o plano do campo.
+
+Essa transformação será representada por uma matriz de homografia $H$, que relaciona pontos correspondentes entre dois planos. Considerando um ponto da imagem representado em coordenadas homogêneas por
+
+\begin{equation}
+\tilde{p}_{imagem} =
+\begin{bmatrix}
+x \
+y \
+1
+\end{bmatrix},
+\end{equation}
+
+sua projeção para o plano do campo pode ser obtida por
+
+\begin{equation}
+\tilde{p}*{campo} =
+H\tilde{p}*{imagem}.
+\end{equation}
+
+Após a transformação, as coordenadas cartesianas serão obtidas pela normalização das coordenadas homogêneas:
+
+\begin{equation}
+x_{campo} =
+\frac{\tilde{x}*{campo}}
+{\tilde{w}*{campo}},
+\qquad
+y_{campo} =
+\frac{\tilde{y}*{campo}}
+{\tilde{w}*{campo}}.
+\end{equation}
+
+No contexto deste projeto, a matriz de homografia disponibilizada pelo conjunto de dados SoccerTrack v2 será utilizada para realizar essa transformação. O SoccerTrack v2 foi desenvolvido especificamente para tarefas relacionadas a rastreamento de múltiplos objetos e reconstrução do estado do jogo. O conjunto disponibiliza gravações panorâmicas em resolução 4K e anotações que incluem coordenadas bidimensionais dos jogadores no campo, identificadores baseados nos números das camisas, funções e equipes \cite{scott2025soccertrackv2}.
+
+Para representar a posição de cada jogador no campo, será utilizado como ponto de referência o centro inferior da sua caixa delimitadora. Essa escolha busca aproximar o ponto de contato dos pés do jogador com o gramado, reduzindo o deslocamento introduzido pela utilização do centro geométrico da caixa.
+
+\subsection{Identificação das equipes}
+
+Além da posição espacial, o sistema poderá utilizar características visuais dos jogadores para determinar a equipe à qual pertencem. Essa etapa será baseada principalmente nas características cromáticas das regiões correspondentes aos uniformes.
+
+Para cada jogador, uma região da imagem associada à parte superior do corpo poderá ser utilizada para extrair características de cor. Essas características serão posteriormente agrupadas de maneira a separar os jogadores pertencentes às diferentes equipes. A informação obtida será associada à identidade persistente do jogador fornecida pelo rastreador.
+
+\subsection{Metodologia proposta}
+
+A metodologia proposta será organizada em um fluxo de processamento composto pelas etapas de aquisição do vídeo, detecção dos jogadores, rastreamento temporal, transformação geométrica e análise das posições no campo.
+
+Inicialmente, um vídeo de uma partida de futebol será utilizado como entrada do sistema. O vídeo será processado quadro a quadro e cada quadro será submetido ao detector de jogadores. Para cada detecção serão armazenadas as coordenadas da caixa delimitadora e a confiança associada à detecção.
+
+As detecções serão então fornecidas ao algoritmo de rastreamento, que realizará a associação temporal dos jogadores. Como resultado, cada jogador receberá um identificador persistente, permitindo a construção de sua trajetória ao longo da partida.
+
+Para cada jogador detectado, será determinado o ponto inferior central da caixa delimitadora:
+
+\begin{equation}
+p =
+\begin{bmatrix}
+x_c \
+y_{\max} \
+1
+\end{bmatrix},
+\end{equation}
+
+em que $x_c$ representa a coordenada horizontal do centro da caixa delimitadora e $y_{\max}$ representa sua coordenada vertical inferior.
+
+Esse ponto será submetido à transformação projetiva definida pela homografia fornecida pelo dataset. O resultado será uma estimativa da posição do jogador no sistema de coordenadas do campo.
+
+As posições obtidas serão armazenadas juntamente com o identificador do jogador e, quando disponível, sua equipe. Dessa maneira, será possível construir trajetórias individuais e representar simultaneamente a distribuição espacial dos jogadores no campo.
+
+Finalmente, os resultados serão apresentados tanto sobre os quadros do vídeo original quanto em uma representação bidimensional do campo. Essa representação permitirá comparar visualmente as posições estimadas com as posições de referência fornecidas pelo dataset.
+
+A implementação será realizada em Python, utilizando bibliotecas de processamento de imagens, visão computacional e aprendizado de máquina. O SoccerTrack v2 será utilizado como principal fonte de dados para desenvolvimento e avaliação do método \cite{scott2025soccertrackv2}.
