@@ -10,6 +10,9 @@
 \usepackage[utf8]{inputenc}
 \usepackage{longtable}
 \usepackage{pgfplots}
+\usepackage[backend=bibtex]{biblatex}
+\usepackage[brazil]{babel}
+\addbibresource{references.bib}
 \pgfplotsset{compat=1.18}
 \renewcommand{\listfigurename}{Figuras}
 \renewcommand{\listtablename}{Tabelas}
@@ -18,5 +21,8 @@
 
 \input{capa}
 \input{introducao}
+\input{objetivos}
+\input{metodos.tex}
+\printbibliography
 
 \end{document}
