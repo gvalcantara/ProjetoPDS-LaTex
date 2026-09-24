@@ -1,0 +1,15 @@
+\section{Materiais e Ferramentas}
+
+O projeto utilizará como principal fonte de dados o conjunto SoccerTrack v2, que disponibiliza sequências de vídeo de partidas de futebol e informações de referência associadas aos jogadores \cite{scott2025soccertrackv2}. Entre os dados utilizados estão os vídeos das partidas, as anotações referentes às posições e identidades dos jogadores e as informações geométricas necessárias para relacionar as coordenadas da imagem às coordenadas do campo.
+
+Os vídeos serão processados quadro a quadro ao longo das etapas de detecção e rastreamento. As anotações disponibilizadas pelo conjunto de dados serão utilizadas principalmente como referência para a avaliação dos resultados obtidos, permitindo comparar as posições e trajetórias estimadas pelo sistema com as informações disponíveis. Dessa forma, não está prevista a rotulação manual integral dos vídeos. Caso necessário, anotações adicionais poderão ser produzidas apenas para análise de situações específicas durante os experimentos.
+
+A implementação será desenvolvida em Python. O OpenCV será utilizado para leitura e manipulação dos vídeos, processamento dos quadros e realização das transformações geométricas necessárias. O NumPy será empregado nas operações matriciais e numéricas, incluindo o tratamento das coordenadas e das matrizes utilizadas nas transformações. O Matplotlib será utilizado na visualização dos resultados e no acompanhamento das etapas de desenvolvimento.
+
+A detecção dos jogadores será realizada por meio de técnicas de detecção de objetos, enquanto o acompanhamento dos jogadores ao longo dos quadros será realizado por um método de rastreamento baseado em detecção, conforme descrito na seção de Métodos. As bibliotecas específicas empregadas nessas etapas serão definidas de acordo com os métodos selecionados durante a implementação, evitando restringir antecipadamente o projeto a uma implementação específica.
+
+Para a transformação das posições observadas na imagem para o sistema de coordenadas do campo, serão utilizadas as informações de homografia disponibilizadas juntamente com os dados experimentais. A transformação será aplicada ao ponto de referência associado a cada jogador detectado, permitindo obter uma estimativa de sua posição no campo.
+
+A identificação das equipes será investigada a partir de características visuais dos jogadores, especialmente informações relacionadas à cor e à aparência dos uniformes. As ferramentas necessárias para essa etapa serão definidas durante os experimentos, de acordo com os métodos de processamento e classificação adotados.
+
+O processamento será realizado nos computadores pessoais já disponíveis aos integrantes, não havendo, neste momento, previsão de aquisição de câmeras, kits ou outros componentes específicos de hardware. O conjunto de dados ainda deverá ser obtido e organizado localmente, e o ambiente de software será configurado com as bibliotecas necessárias ao desenvolvimento do sistema.
