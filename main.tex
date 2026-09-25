@@ -10,10 +10,9 @@
 \usepackage[utf8]{inputenc}
 \usepackage{longtable}
 \usepackage{pgfplots}
-\usepackage[brazilian]{babel}
-\usepackage{csquotes}
-\usepackage[backend=biber]{biblatex}
-\addbibresource{references/references.bib}
+\usepackage[backend=bibtex]{biblatex}
+\usepackage[brazil]{babel}
+\addbibresource{references.bib}
 \pgfplotsset{compat=1.18}
 \renewcommand{\listfigurename}{Figuras}
 \renewcommand{\listtablename}{Tabelas}
@@ -22,6 +21,8 @@
 
 \input{capa}
 \input{sections/introducao.tex}
+\input{sections/objetivos}
+\input{sections/metodos.tex}
 \input{sections/materiais_ferramentas.tex}
 \input{sections/cronograma.tex}
 \printbibliography
